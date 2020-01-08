@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { likeBlog, removeBlog } from '../reducers/blogsReducer'
+import { likeBlog, removeBlog, postComment } from '../reducers/blogsReducer'
 import { createNotification } from '../reducers/notificationReducer'
 import { withRouter } from 'react-router-dom'
+import Togglable from './Togglable'
+import SubmitComment from './SubmitComment'
 
 const Blog = (props) => {
 	const blog = props.blogs.find(u => u.id === props.blogID)
@@ -29,6 +31,12 @@ const Blog = (props) => {
 		}
 	}
 
+	const loadComments = () => {
+		return blog.comments.map(comm => <li key={comm.id}>{comm.comment}</li>)
+	}
+
+	const commentFormRef = React.createRef()
+
 	if (blog !== undefined) return (
 		<div>
 			<h2>{blog.title}</h2>
@@ -36,13 +44,20 @@ const Blog = (props) => {
 			{blog.likes} likes <button onClick={handleLike}>Like</button> <br />
 			Added by {blog.user.name} <br />
 			<button onClick={handleRemove}>Delete</button>
+			<div>
+				<h3>Comments</h3>
+				<Togglable buttonLabel={'Add Comment'} ref={commentFormRef}>
+					<SubmitComment blog={blog} />
+				</Togglable>
+				<ul>{loadComments()}</ul>
+			</div>
 		</div>
 	)
 	return null
 }
 
 
-const mapDispatchToProps = { likeBlog, removeBlog, createNotification }
+const mapDispatchToProps = { likeBlog, removeBlog, postComment, createNotification }
 
 const mapStateToProps = (state) => {
 	return {

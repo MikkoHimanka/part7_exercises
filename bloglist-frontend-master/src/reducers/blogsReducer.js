@@ -30,15 +30,6 @@ export const initializeBlogs = () => {
 	}
 }
 
-export const clickBlog = (blog) => {
-	return async dispatch => {
-		dispatch({
-			type: 'CLICK',
-			data: blog
-		})
-	}
-}
-
 export const updateBlogList = () => {
 	return async dispatch => {
 		const newArray = await blogsService.getAll()
@@ -49,20 +40,24 @@ export const updateBlogList = () => {
 	}
 }
 
+export const postComment = (blog, comment) => {
+	return async dispatch => {
+		const newBlog = {
+			id: blog.id,
+			comment
+		}
+		await blogsService.postComment(newBlog)
+		dispatch({
+			type: 'POST_COMMENT',
+			data: newBlog
+		})
+	}
+}
+
 const blogsReducer = (state = [], action) => {
 	switch (action.type) {
-		case 'CLICK':
-			const objectToClick = state.find(x => x.id === action.data.id)
-			const clickedObject = {
-				...objectToClick,
-				clicked: !(objectToClick.clicked)
-			}
-			return state.map(obj => obj.id !== action.data.id ? obj : clickedObject)
 		case 'INIT_BLOGS':
-			const clicked = (array) => {
-				return array.map(obj => ({ ...obj, clicked: true }))
-			}
-			return clicked(action.data)
+			return action.data.map(x => x.comments === undefined ? {...x, comments: []} : x)
 		case 'REMOVE':
 			const id = action.data.id
 			return state.filter(object => object.id !== id)
@@ -76,7 +71,14 @@ const blogsReducer = (state = [], action) => {
 		case 'UPDATE':
 			const newArray = action.data.map(obj => !state.map(x => x.id).includes(obj.id) ? obj : null)
 			const newObject = newArray.find(x => x !== null)
-			return [...state, {...newObject, clicked: true}]
+			return [...state, {...newObject}]
+		case 'POST_COMMENT':
+			const uncommented = state.find(x => x.id === action.data.id)
+			const commented = {
+				...uncommented,
+				comments: uncommented.comments.concat(action.data.comment)
+			}
+			return state.map(obj => obj.id !== action.data.id ? obj : commented).sort((a, b) => b.likes - a.likes)
 
 		default: return state
 	}
