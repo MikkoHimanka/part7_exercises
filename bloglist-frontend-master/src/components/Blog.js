@@ -5,6 +5,7 @@ import { createNotification } from '../reducers/notificationReducer'
 import { withRouter } from 'react-router-dom'
 import Togglable from './Togglable'
 import SubmitComment from './SubmitComment'
+import { Button, Header, Segment, Table } from 'semantic-ui-react'
 
 const Blog = (props) => {
 	const blog = props.blogs.find(u => u.id === props.blogID)
@@ -32,24 +33,28 @@ const Blog = (props) => {
 	}
 
 	const loadComments = () => {
-		return blog.comments.map(comm => <li key={comm.id}>{comm.comment}</li>)
+		return blog.comments.map(comm => <Table.Row key={comm.id}><Table.Cell>{comm.comment}</Table.Cell></Table.Row>)
 	}
 
 	const commentFormRef = React.createRef()
 
 	if (blog !== undefined) return (
 		<div>
-			<h2>{blog.title}</h2>
-			<a href={blog.url}>{blog.url}</a> <br />
-			{blog.likes} likes <button onClick={handleLike}>Like</button> <br />
-			Added by {blog.user.name} <br />
-			<button onClick={handleRemove}>Delete</button>
+			<Header dividing inverted as='h2' style={{marginTop: '1em'}}>{blog.title}</Header>
+			<Segment inverted>
+				<a href={blog.url}>{blog.url}</a> <br />
+				{blog.likes} likes <Button compact inverted onClick={handleLike} size='mini'>Like</Button> <br />
+				Added by {blog.user.name} <br />
+				<Button compact inverted onClick={handleRemove} size='mini'>Delete</Button>
+			</Segment>
 			<div>
-				<h3>Comments</h3>
+				<Header style={{marginTop: '1em'}} as='h3' inverted>Comments</Header>
 				<Togglable buttonLabel={'Add Comment'} ref={commentFormRef}>
 					<SubmitComment blog={blog} />
 				</Togglable>
-				<ul>{loadComments()}</ul>
+				<Table celled inverted>
+					<Table.Body>{loadComments()}</Table.Body>
+				</Table>
 			</div>
 		</div>
 	)

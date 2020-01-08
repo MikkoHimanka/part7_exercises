@@ -3,15 +3,19 @@ import { connect } from 'react-redux'
 import { logout, loginUser } from '../reducers/userReducer'
 import { useField } from '../hooks'
 import { Link } from 'react-router-dom'
+import { Form, Button, Menu } from 'semantic-ui-react'
 
 const Login = (props) => {
-	const Menu = () => {
+	const Menue = () => {
 		return (
-			<div style={{backgroundColor: '#ABABAB'}}>
-				<Link style={{paddingRight: '1em'}} to={'/'}>Blogs</Link>
-				<Link style={{paddingRight: '1em'}} to={'/users'}>Users</Link>
-				{props.user.name} logged in <button onClick={() => logout()}>Logout</button>
-			</div>
+			<Menu inverted>
+				<Menu.Item link><Link to={'/'}>Blogs</Link></Menu.Item>
+				<Menu.Item link><Link to={'/users'}>Users</Link></Menu.Item>
+				<Menu.Menu position='right'>
+					<Menu.Item>{props.user.name} logged in</Menu.Item>
+					<Menu.Item content='Logout' onClick={() => logout()} />
+				</Menu.Menu>
+			</Menu>
 		)
 	}
 
@@ -31,17 +35,17 @@ const Login = (props) => {
 	}
 
 	const loginForm = () => (
-		<form onSubmit={handleLogin}>
-			<div>
-        Username
+		<Form onSubmit={handleLogin}>
+			<Form.Field>
+        		<label>Username</label>
 				<input {...username.attributes()} />
-			</div>
-			<div>
-        Password
+			</Form.Field>
+			<Form.Field>
+        		<label>Password</label>
 				<input {...password.attributes()} />
-			</div>
-			<button type="submit">Login</button>
-		</form>
+			</Form.Field>
+			<Button type='submit'>Login</Button>
+		</Form>
 	)
 
 	const logout = () => {
@@ -58,7 +62,7 @@ const Login = (props) => {
 		)
 	} else return (
 		<div>
-			<Menu />
+			<Menue />
 		</div>
 	)
 }

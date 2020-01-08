@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Message } from 'semantic-ui-react'
 
 
 const Notification = (props) => {
@@ -11,25 +12,12 @@ const Notification = (props) => {
 		return null
 	}
 
-	const errorStyle = {
-		color: '#993300',
-		backgroundColor: 'grey',
-		padding: 10,
-		margin: '1em'
-	}
-
-	const normalStyle = {
-		padding: 10,
-		color: 'green',
-		margin: '1em'
-	}
-
 	if (error) {
-		return <div style={errorStyle}>{message}</div>
+		return <Message error>{message}</Message>
 	}
 
 	if (!error) {
-		return <div style={normalStyle}>{message}</div>
+		return <Message success>{message}</Message>
 	}
 }
 

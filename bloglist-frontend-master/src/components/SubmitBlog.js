@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { createNotification } from '../reducers/notificationReducer'
 import { initializeUsers } from '../reducers/usersReducer'
 import { updateBlogList } from '../reducers/blogsReducer'
+import { Form, Button } from 'semantic-ui-react'
 
 const SubmitBlog = (props) => {
 	const title = useField('text')
@@ -34,16 +35,12 @@ const SubmitBlog = (props) => {
 		}
 	}
 	return (
-		<form onSubmit={handleSubmit}>
-			<table>
-				<tbody>
-					<tr><td>title:</td><td><input {...title.attributes()} style={{ width: '20em'}}/></td></tr>
-					<tr><td>author:</td><td><input {...author.attributes()} style={{ width: '20em'}} /></td></tr>
-					<tr><td>url:</td><td><input {...url.attributes()} style={{ width: '20em'}} /></td></tr>
-				</tbody>
-			</table>
-			<button type="submit">Create</button>
-		</form>
+		<Form onSubmit={handleSubmit} inverted>
+					<Form.Field><label>title:</label><input {...title.attributes()} /></Form.Field>
+					<Form.Field><label>author:</label><input {...author.attributes()} /></Form.Field>
+					<Form.Field><label>url:</label><input {...url.attributes()} /></Form.Field>
+			<Button type="submit" inverted>Create</Button>
+		</Form>
 	)
 }
 
