@@ -3,6 +3,7 @@ import blogsService from '../services/blogs'
 import { useField } from '../hooks'
 import { connect } from 'react-redux'
 import { createNotification } from '../reducers/notificationReducer'
+import { initializeUsers } from '../reducers/usersReducer'
 import { updateBlogList } from '../reducers/blogsReducer'
 
 const SubmitBlog = (props) => {
@@ -23,6 +24,7 @@ const SubmitBlog = (props) => {
 			await blogsService.create(blog)
 			props.updateBlogList()
 			props.createNotification({message: `A new blog ${title.value} by ${author.value} added`, error: false}, props.notification.id)
+			props.initializeUsers()
 			title.reset()
 			author.reset()
 			url.reset()
@@ -33,16 +35,20 @@ const SubmitBlog = (props) => {
 	}
 	return (
 		<form onSubmit={handleSubmit}>
-            title: <input {...title.attributes()} /><br />
-            author: <input {...author.attributes()} /><br />
-            url: <input {...url.attributes()} /><br />
+			<table>
+				<tbody>
+					<tr><td>title:</td><td><input {...title.attributes()} style={{ width: '20em'}}/></td></tr>
+					<tr><td>author:</td><td><input {...author.attributes()} style={{ width: '20em'}} /></td></tr>
+					<tr><td>url:</td><td><input {...url.attributes()} style={{ width: '20em'}} /></td></tr>
+				</tbody>
+			</table>
 			<button type="submit">Create</button>
 		</form>
 	)
 }
 
 const mapDispatchToProps = {
-	createNotification, updateBlogList
+	createNotification, updateBlogList, initializeUsers
 }
 
 const mapStateToProps = (state) => {

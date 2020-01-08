@@ -2,8 +2,19 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { logout, loginUser } from '../reducers/userReducer'
 import { useField } from '../hooks'
+import { Link } from 'react-router-dom'
 
 const Login = (props) => {
+	const Menu = () => {
+		return (
+			<div style={{backgroundColor: '#ABABAB'}}>
+				<Link style={{paddingRight: '1em'}} to={'/'}>Blogs</Link>
+				<Link style={{paddingRight: '1em'}} to={'/users'}>Users</Link>
+				{props.user.name} logged in <button onClick={() => logout()}>Logout</button>
+			</div>
+		)
+	}
+
 	const username = useField('text')
 	const password = useField('password')
 
@@ -47,8 +58,7 @@ const Login = (props) => {
 		)
 	} else return (
 		<div>
-			<h1>Blogs</h1>
-			<p>{props.user.name} logged in <button onClick={() => logout()}>Logout</button></p>
+			<Menu />
 		</div>
 	)
 }

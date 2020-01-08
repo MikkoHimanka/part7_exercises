@@ -1,39 +1,28 @@
 import React from 'react'
-import Blog from './Blog'
 import { connect } from 'react-redux'
 import { initializeBlogs, removeBlog, likeBlog } from '../reducers/blogsReducer'
 import { createNotification } from '../reducers/notificationReducer'
+import { Link } from 'react-router-dom'
 
 const BlogList = (props) => {
+	const blogListStyle = {
+		listStyleType: 'none',
+		padding: '1em'
+	}
+
 	const content = () => props.blogs
 		.map(blog => 
-			<div key={blog.id}>
-				<Blog blog={blog} handleRemove={handleRemove} handleLike={handleLike} />
-			</div>)
+			<li key={blog.id}>
+				<Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link>
+			</li>
+		)
 	
-	const handleLike = (blog) => {
-		try{
-			props.likeBlog(blog)
-			props.createNotification({error: false, message: `Liked ${blog.title} by ${blog.author}`}, props.notification.id)
-			
-		} catch (exception) {
-			props.createNotification({error: true, message: 'Error liking a blog post'}, props.noti.id)
-			console.log('Error liking a blog post')
-		}
-	}
-
-	const handleRemove = (blog) => {
-		if (window.confirm(`Remove ${blog.title} by ${blog.author}`))
-			try{
-				props.removeBlog(blog.id)
-			} catch (exception) {
-				console.log('Error removing a blog post')
-			}
-	}
-
 	if (props.user !== null) {
 		return (
-			<div>{content()}</div>
+			<div>
+				<h1>Blogs</h1>
+				<ul style={blogListStyle}>{content()}</ul>
+			</div>
 		)
 	} else return (
 		<div></div>

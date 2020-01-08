@@ -1,70 +1,55 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { clickBlog } from '../reducers/blogsReducer'
-//import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom'
+import { likeBlog, removeBlog } from '../reducers/blogsReducer'
+import { createNotification } from '../reducers/notificationReducer'
+import { withRouter } from 'react-router-dom'
 
 const Blog = (props) => {
-	const blogStyle = {
-		paddingTop: 10,
-		paddingLeft: 2,
-		border: 'solid',
-		borderWidth: 1,
-		marginBottom: 5
-	}
+	const blog = props.blogs.find(u => u.id === props.blogID)
 
-	const blog = props.blog
-	const handleLikeThis = (event) => { 
-		event.stopPropagation()
-		props.handleLike(props.blog)
-	}
-	const handleRemove = props.handleRemove
+	const handleRemove = () => {
+		if (window.confirm(`Remove ${blog.title} by ${blog.author}`))
+			try{
+				props.removeBlog(blog.id)
+				props.createNotification({error: false, message: 'Blog post deleted'}, props.notification.id)
+			} catch (exception) {
+				console.log('Error removing a blog post')
+			}
+		props.history.push('/')
+	}	
 
-	if (!blog.clicked) {
-		if (props.user.username === blog.user.username) {
-			return (
-				<div style={blogStyle}>
-					<div style={{position: 'relative', zIndex:1}} onClick={() => props.clickBlog(blog)}>
-          &quot;{blog.title}&quot; by {blog.author}<br />
-						<a href={blog.url}>{blog.url}</a><br />
-						{blog.likes} likes<button style={{position: 'relative', zIndex:2}} onClick={handleLikeThis}>Like</button><br />
-          Added by {blog.user.name}<br />
-						<button onClick={() => handleRemove(blog)}>Delete</button>
-					</div>
-				</div>
-			)
+	const handleLike = () => {
+		try{
+			props.likeBlog(blog)
+			props.createNotification({error: false, message: `Liked ${blog.title} by ${blog.author}`}, props.notification.id)
+			
+		} catch (exception) {
+			props.createNotification({error: true, message: 'Error liking a blog post'}, props.notification.id)
+			console.log('Error liking a blog post')
 		}
-		return (
-			<div style={blogStyle}>
-				<div style={{position: 'relative', zIndex:1}} onClick={() => props.clickBlog(blog)}>
-        &quot;{blog.title}&quot; by {blog.author}<br />
-					<a href={blog.url}>{blog.url}</a><br />
-					{blog.likes} likes<button style={{position: 'relative', zIndex:2}} onClick={handleLikeThis}>Like</button><br />
-          Added by {blog.user.name}<br />
-				</div>
-			</div>
-		)
 	}
 
-	return (
-		<div style={blogStyle}>
-			<div onClick={() => props.clickBlog(blog)} className="showButton">
-      &quot;{blog.title}&quot; by {blog.author}
-			</div>
+	if (blog !== undefined) return (
+		<div>
+			<h2>{blog.title}</h2>
+			<a href={blog.url}>{blog.url}</a> <br />
+			{blog.likes} likes <button onClick={handleLike}>Like</button> <br />
+			Added by {blog.user.name} <br />
+			<button onClick={handleRemove}>Delete</button>
 		</div>
 	)
+	return null
 }
+
+
+const mapDispatchToProps = { likeBlog, removeBlog, createNotification }
 
 const mapStateToProps = (state) => {
 	return {
-		user: state.user,
-		blogs: state.blogs
+		blogs: state.blogs,
+		notification: state.notification
 	}
 }
 
-const mapDispatchToProps = {
-	clickBlog
-}
-
 const ConnectedBlog = connect(mapStateToProps, mapDispatchToProps)(Blog)
-
-export default ConnectedBlog
+export default withRouter(ConnectedBlog)
