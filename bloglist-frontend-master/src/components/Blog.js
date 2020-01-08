@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { clickBlog } from '../reducers/blogsReducer'
+//import { BrowserRouter as Router, Route, Link, Redirect } from 'react-router-dom'
 
 const Blog = (props) => {
 	const blogStyle = {
